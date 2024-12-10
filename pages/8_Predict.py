@@ -25,48 +25,46 @@ def tokenize_function(texts, max_length=512):
 
 text = st.text_input('Predict field from text')
 text = text.strip()
-new_texts = [text,]
-new_encodings = tokenizer(new_texts, padding=True, truncation=True, return_tensors='pt').to(device)
 
-# Convert predictions to labels
-with open('label_map.json', 'r') as f:
-    label_map = json.load(f)
+def fun1():
+    new_texts = [text,]
+    new_encodings = tokenizer(new_texts, padding=True, truncation=True, return_tensors='pt').to(device)
 
-inverse_label_map = {v: k for k, v in label_map.items()}
-display_labels = [inverse_label_map[i] for i in range(len(label_map))]
-with torch.no_grad():
-    outputs = model(**new_encodings)
-    predictions = torch.argmax(outputs.logits, dim=-1)
-    pred_probs = torch.softmax(outputs.logits, dim=-1)
-    for i, prediction in enumerate(predictions):
-        print(f"Text: {new_texts[i]}, Predicted Label: {inverse_label_map[prediction.item()]}")
-    # for label, prob in zip(display_labels, pred_probs[i]):
-    #     print(f"Label: {label}, {prob*100:.2f}%")
-    
-subject = ['AGRI - Agricultural and Biological Sciences', 'ARTS - Arts and Humanities', 'BIOC - Biochemistry, Genetics and Molecular Biology', 'BUSI - Business, Management and Accounting', 'CENG - Chemical Engineering', 'CHEM - Chemistry', 'COMP - Computer Science', 'DECI - Decision Sciences', 'DENT - Dentistry', 'EART - Earth and Planetary Sciences', 'ECON - Economics, Econometrics and Finance', 'ENER - Energy', 'ENGI - Engineering', 'ENVI - Environmental Science', 'HEAL - Health Professions', 'IMMU - Immunology and Microbiology', 'MATE - Materials Science', 'MATH - Mathematics', 'MEDI - Medicine', 'NEUR - Neuroscience', 'NURS - Nursing', 'PHAR - Pharmacology, Toxicology and Pharmaceutics', 'PHYS - Physics and Astronomy', 'PSYC - Psychology', 'SOCI - Social Sciences', 'VETE - Veterinary', 'MULT - Multidisciplinary']
+    # Convert predictions to labels
+    with open('label_map.json', 'r') as f:
+        label_map = json.load(f)
 
-predicted_labels = [display_labels[prediction] for prediction in predictions]
+    inverse_label_map = {v: k for k, v in label_map.items()}
+    display_labels = [inverse_label_map[i] for i in range(len(label_map))]
+    with torch.no_grad():
+        outputs = model(**new_encodings)
+        predictions = torch.argmax(outputs.logits, dim=-1)
+        pred_probs = torch.softmax(outputs.logits, dim=-1)
+        for i, prediction in enumerate(predictions):
+            print(f"Text: {new_texts[i]}, Predicted Label: {inverse_label_map[prediction.item()]}")
+        # for label, prob in zip(display_labels, pred_probs[i]):
+        #     print(f"Label: {label}, {prob*100:.2f}%")
+        
+    return [display_labels[prediction] for prediction in predictions]
 
-output = predicted_labels[0]
-# if text.strip() != '':
-#     for s in subject:
-#         if text == s[0:4]:
-#             st.write(predicted_labels[0])
-#             break
+
 if text.strip() != '':
+    predicted_labels = fun1()
+    output = predicted_labels[0]
     st.write(output)
 
 st.divider()
 
-df = pd.read_csv('data_preprocessed_1.csv')
-df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
-tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
+def fun2():
+    df = pd.read_csv('data_preprocessed_1.csv')
+    df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
 
-tfidf_matrix = tfidf_vectorizer.fit_transform(df['texts'])
+    return tfidf_vectorizer.fit_transform(df['texts']),df
 
 def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
     # Transform the input text using the same TF-IDF vectorizer
-    input_vector = tfidf_vectorizer.transform([input_text])
+    input_vector = fun2()[0].transform([input_text])
     
     # Compute cosine similarity between the input text and all papers
     cosine_similarities = cosine_similarity(input_vector, tfidf_matrix).flatten()
@@ -82,7 +80,7 @@ def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
 # Example usage
 input_text = st.text_input('Get Suggestion')
 input_text = input_text.strip()
-recommended_papers = recommend_papers(input_text, tfidf_matrix, df)
 
 if input_text.strip() != '':
+    recommended_papers = recommend_papers(input_text, fun2()[0], fun2()[1])
     st.write(recommended_papers[['title', 'abstract']])
