@@ -77,12 +77,12 @@ def fun1():
         #     print(f"Label: {label}, {prob*100:.2f}%")
         
     return [display_labels[prediction] for prediction in predictions]
-
+d = {'AGRI': 'AGRI - Agricultural and Biological Sciences', 'ARTS': 'ARTS - Arts and Humanities', 'BIOC': 'BIOC - Biochemistry, Genetics and Molecular Biology', 'BUSI': 'BUSI - Business, Management and Accounting', 'CENG': 'CENG - Chemical Engineering', 'CHEM': 'CHEM - Chemistry', 'COMP': 'COMP - Computer Science', 'DECI': 'DECI - Decision Sciences', 'DENT': 'DENT - Dentistry', 'EART': 'EART - Earth and Planetary Sciences', 'ECON': 'ECON - Economics, Econometrics and Finance', 'ENER': 'ENER - Energy', 'ENGI': 'ENGI - Engineering', 'ENVI': 'ENVI - Environmental Science', 'HEAL': 'HEAL - Health Professions', 'IMMU': 'IMMU - Immunology and Microbiology', 'MATE': 'MATE - Materials Science', 'MATH': 'MATH - Mathematics', 'MEDI': 'MEDI - Medicine', 'NEUR': 'NEUR - Neuroscience', 'NURS': 'NURS - Nursing', 'PHAR': 'PHAR - Pharmacology, Toxicology and Pharmaceutics', 'PHYS': 'PHYS - Physics and Astronomy', 'PSYC': 'PSYC - Psychology', 'SOCI': 'SOCI - Social Sciences', 'VETE': 'VETE - Veterinary', 'MULT': 'MULT - Multidisciplinary'}
 
 if text.strip() != '':
     predicted_labels = fun1()
     output = predicted_labels[0]
-    st.write(output)
+    st.write(d[output])
 
 
 def fun2():
