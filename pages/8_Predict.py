@@ -55,31 +55,34 @@ if text.strip() != '':
 
 st.divider()
 
-df = pd.read_csv('data_preprocessed_1.csv')
-df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
-tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
+def fun2():
+    df = pd.read_csv('data_preprocessed_1.csv')
+    df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
 
-tfidf_matrix = tfidf_vectorizer.fit_transform(df['texts'])
+    tfidf_matrix = tfidf_vectorizer.fit_transform(df['texts'])
 
-def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
-    # Transform the input text using the same TF-IDF vectorizer
-    input_vector = tfidf_vectorizer.transform([input_text])
+    def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
+        # Transform the input text using the same TF-IDF vectorizer
+        input_vector = tfidf_vectorizer.transform([input_text])
+        
+        # Compute cosine similarity between the input text and all papers
+        cosine_similarities = cosine_similarity(input_vector, tfidf_matrix).flatten()
+        
+        # Get the indices of the top_k most similar papers
+        similar_indices = cosine_similarities.argsort()[-top_k:][::-1]
+        
+        # Retrieve the most similar papers
+        similar_papers = data.iloc[similar_indices]
+        
+        return similar_papers
     
-    # Compute cosine similarity between the input text and all papers
-    cosine_similarities = cosine_similarity(input_vector, tfidf_matrix).flatten()
-    
-    # Get the indices of the top_k most similar papers
-    similar_indices = cosine_similarities.argsort()[-top_k:][::-1]
-    
-    # Retrieve the most similar papers
-    similar_papers = data.iloc[similar_indices]
-    
-    return similar_papers
+    return recommend_papers(input_text, tfidf_matrix, df)
 
 # Example usage
 input_text = st.text_input('Get Suggestion')
 input_text = input_text.strip()
 
 if input_text.strip() != '':
-    recommended_papers = recommend_papers(input_text, tfidf_matrix, df)
+    recommended_papers = fun2()
     st.write(recommended_papers[['title', 'abstract']])
