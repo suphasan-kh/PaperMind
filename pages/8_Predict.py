@@ -52,4 +52,5 @@ output = predicted_labels[0]
 #         if text == s[0:4]:
 #             st.write(predicted_labels[0])
 #             break
-st.write(output)
+if text.strip() != '':
+    st.write(output)
