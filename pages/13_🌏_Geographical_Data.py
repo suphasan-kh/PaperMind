@@ -18,6 +18,8 @@ collection = db['papers']
 # st.sidebar.text_input('Search Author (Please Enter Full Name ex. Frodo Baggins)' ,value = default, key='dir')
 # author = state.dir
 
+st.write("## Search Author in Sidebar")
+
 state = st.session_state
 if 'dir' not in state:
     state.dir = ''
