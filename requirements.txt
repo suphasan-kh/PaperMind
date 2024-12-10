@@ -10,4 +10,4 @@ transformers
 torch
 matplotlib
 seaborn
-sklearn
+scikit-learn
