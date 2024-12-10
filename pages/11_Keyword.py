@@ -27,7 +27,7 @@ for doc in collection.find({"authkeywords.author-keyword":{"$exists": True}},{"a
 df = pd.DataFrame(data)
 # do the bar chart thing    
 keyword_count = df.groupby(["subject","keyword"]).size().reset_index(name="frequency")
-st.title("popular keywords by subject area")
+st.title("Popular Keywords by Subject Area")
 # dopdown to select subject area
 subject_areas = keyword_count["subject"].unique()
 selected_subject = st.selectbox("Select Subject Area",subject_areas)
