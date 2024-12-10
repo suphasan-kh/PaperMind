@@ -20,7 +20,9 @@ def tokenize_function(texts, max_length=512):
     return tokenizer(texts, padding='max_length', truncation=True, max_length=max_length, return_tensors='pt')
 
 # Sample texts for inference
-new_texts = ["business not growing fast",]
+
+text = st.text_input('Predict field from text')
+new_texts = [text,]
 new_encodings = tokenizer(new_texts, padding=True, truncation=True, return_tensors='pt').to(device)
 
 # Convert predictions to labels
@@ -42,4 +44,4 @@ with torch.no_grad():
 
 predicted_labels = [display_labels[prediction] for prediction in predictions]
 print(predicted_labels)
-st.write(predicted_labels)
+st.write(predicted_labels[0])
