@@ -60,11 +60,11 @@ def fun2():
     df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
     tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
 
-    return tfidf_vectorizer.fit_transform(df['texts']),df
+    return tfidf_vectorizer.fit_transform(df['texts']), df
 
 def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
     # Transform the input text using the same TF-IDF vectorizer
-    input_vector = fun2()[0].transform([input_text])
+    input_vector = tfidf_matrix.transform([input_text])
     
     # Compute cosine similarity between the input text and all papers
     cosine_similarities = cosine_similarity(input_vector, tfidf_matrix).flatten()
@@ -82,5 +82,7 @@ input_text = st.text_input('Get Suggestion')
 input_text = input_text.strip()
 
 if input_text.strip() != '':
-    recommended_papers = recommend_papers(input_text, fun2()[0], fun2()[1])
+    tfidf_matrix = fun2()[0]
+    df = fun2()[1]
+    recommended_papers = recommend_papers(input_text, tfidf_matrix, df)
     st.write(recommended_papers[['title', 'abstract']])
