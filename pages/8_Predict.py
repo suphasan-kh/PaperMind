@@ -79,9 +79,9 @@ def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
     return similar_papers
 
 # Example usage
-input_text = st.text_input('Get Suggestion')
+input_text = st.text_input('Get Suggestion',value='')
 input_text = input_text.strip()
 recommended_papers = recommend_papers(input_text, tfidf_matrix, df)
 
-if text.strip() != '':
+if input_text.strip() != '':
     st.write(recommended_papers[['title', 'abstract']])
