@@ -22,6 +22,7 @@ def tokenize_function(texts, max_length=512):
 # Sample texts for inference
 
 text = st.text_input('Predict field from text')
+text = text.strip()
 new_texts = [text,]
 new_encodings = tokenizer(new_texts, padding=True, truncation=True, return_tensors='pt').to(device)
 
@@ -44,4 +45,5 @@ with torch.no_grad():
 
 predicted_labels = [display_labels[prediction] for prediction in predictions]
 print(predicted_labels)
-st.write(predicted_labels[0])
+if text.strip() is not '':
+    st.write(predicted_labels[0])
