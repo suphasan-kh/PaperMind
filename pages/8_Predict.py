@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import json
+import streamlit as st
 
 # Load the pre-trained model and tokenizer
 # model_name = '/mnt/c/Users/ASUS/Documents/Projects/data-sci/results/checkpoint-11500'
@@ -41,3 +42,4 @@ with torch.no_grad():
 
 predicted_labels = [display_labels[prediction] for prediction in predictions]
 print(predicted_labels)
+st.write(predicted_labels)
