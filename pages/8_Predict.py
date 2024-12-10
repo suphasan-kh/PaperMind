@@ -45,5 +45,5 @@ with torch.no_grad():
 
 predicted_labels = [display_labels[prediction] for prediction in predictions]
 print(predicted_labels)
-if text.strip() is not '':
+if text.strip() != '':
     st.write(predicted_labels[0])
