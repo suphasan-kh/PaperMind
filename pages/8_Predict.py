@@ -43,7 +43,6 @@ with torch.no_grad():
     
 subject = ['AGRI - Agricultural and Biological Sciences', 'ARTS - Arts and Humanities', 'BIOC - Biochemistry, Genetics and Molecular Biology', 'BUSI - Business, Management and Accounting', 'CENG - Chemical Engineering', 'CHEM - Chemistry', 'COMP - Computer Science', 'DECI - Decision Sciences', 'DENT - Dentistry', 'EART - Earth and Planetary Sciences', 'ECON - Economics, Econometrics and Finance', 'ENER - Energy', 'ENGI - Engineering', 'ENVI - Environmental Science', 'HEAL - Health Professions', 'IMMU - Immunology and Microbiology', 'MATE - Materials Science', 'MATH - Mathematics', 'MEDI - Medicine', 'NEUR - Neuroscience', 'NURS - Nursing', 'PHAR - Pharmacology, Toxicology and Pharmaceutics', 'PHYS - Physics and Astronomy', 'PSYC - Psychology', 'SOCI - Social Sciences', 'VETE - Veterinary', 'MULT - Multidisciplinary']
 
-
 predicted_labels = [display_labels[prediction] for prediction in predictions]
 
 output = predicted_labels[0]
@@ -54,3 +53,35 @@ output = predicted_labels[0]
 #             break
 if text.strip() != '':
     st.write(output)
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+df = pd.read_csv('data_preprocessed_1.csv')
+df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
+tfidf_vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
+
+tfidf_matrix = tfidf_vectorizer.fit_transform(df['texts'])
+
+def recommend_papers(input_text, tfidf_matrix, data, top_k=5):
+    # Transform the input text using the same TF-IDF vectorizer
+    input_vector = tfidf_vectorizer.transform([input_text])
+    
+    # Compute cosine similarity between the input text and all papers
+    cosine_similarities = cosine_similarity(input_vector, tfidf_matrix).flatten()
+    
+    # Get the indices of the top_k most similar papers
+    similar_indices = cosine_similarities.argsort()[-top_k:][::-1]
+    
+    # Retrieve the most similar papers
+    similar_papers = data.iloc[similar_indices]
+    
+    return similar_papers
+
+# Example usage
+input_text = st.text_input('Get Suggestion')
+input_text = input_text.strip()
+recommended_papers = recommend_papers(input_text, tfidf_matrix, df)
+
+if text.strip() != '':
+    st.write(recommended_papers[['title', 'abstract']])
