@@ -84,7 +84,6 @@ if text.strip() != '':
     output = predicted_labels[0]
     st.write(output)
 
-st.divider()
 
 def fun2():
     df = pd.read_csv('data_preprocessed_1.csv')
