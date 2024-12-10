@@ -6,3 +6,8 @@ networkx
 pyvis
 stvis
 geopy
+transformers
+torch
+matplotlib
+seaborn
+json
