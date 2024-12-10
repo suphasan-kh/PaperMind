@@ -47,8 +47,9 @@ subject = ['AGRI - Agricultural and Biological Sciences', 'ARTS - Arts and Human
 predicted_labels = [display_labels[prediction] for prediction in predictions]
 
 output = predicted_labels[0]
-if text.strip() != '':
-    for s in subject:
-        if text == s[0:4]:
-            st.write(predicted_labels[0])
-            break
+# if text.strip() != '':
+#     for s in subject:
+#         if text == s[0:4]:
+#             st.write(predicted_labels[0])
+#             break
+st.write(output)
