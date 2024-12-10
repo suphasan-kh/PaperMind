@@ -18,6 +18,8 @@ if 'dir' not in state:
 st.sidebar.text_input('Search Author (Please Enter Full Name ex. Frodo Baggins)' ,value = state.dir, key='dir')
 author = state.dir
 
+st.write("## Search Author in Sidebar")
+
 # @st.cache_data
 # def main():
 if author.strip().count(' ') == 1:
