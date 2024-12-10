@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json
 import streamlit as st
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 # Load the pre-trained model and tokenizer
 # model_name = '/mnt/c/Users/ASUS/Documents/Projects/data-sci/results/checkpoint-11500'
@@ -54,8 +56,7 @@ output = predicted_labels[0]
 if text.strip() != '':
     st.write(output)
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+st.divider()
 
 df = pd.read_csv('data_preprocessed_1.csv')
 df['texts'] = df['title'].fillna('') + " " + df['abstract'].fillna('') + " " + df['authkeywords'].fillna('').apply(lambda x: ' '.join(x) if isinstance(x, list) else x)
