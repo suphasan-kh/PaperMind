@@ -1,0 +1,8 @@
+streamlit
+pymongo
+plotly
+pandas
+networkx
+pyvis
+stvis
+json
